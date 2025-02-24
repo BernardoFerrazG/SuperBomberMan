@@ -7,6 +7,33 @@
 #include <string.h>
 #include "jogo.h"
 
+Texture2D chaves;
+Texture2D kiko;
+Texture2D madruga;
+Texture2D barriga;
+Texture2D barril;
+Texture2D bola;
+Texture2D chapeu;
+Texture2D maleta;
+Texture2D bomba;
+Texture2D explosion_right;
+Texture2D bombaExtra;
+Texture2D velocidade;
+Texture2D raio;
+Texture2D abertura;
+Texture2D campeao;
+Texture2D borda_sup_inf;
+Texture2D bordaLateral;
+Texture2D fundo;
+int vencedor;
+int vencedor1;
+
+Music musicaPlay;
+Music musicaInit;
+Music musicaEnd;
+Music bomb;
+
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------

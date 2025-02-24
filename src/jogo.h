@@ -12,31 +12,31 @@
 #define HNUMBOMB 2
 #define H1NUMBOMB 2
 
-Texture2D chaves;
-Texture2D kiko;
-Texture2D madruga;
-Texture2D barriga;
-Texture2D barril;
-Texture2D bola;
-Texture2D chapeu;
-Texture2D maleta;
-Texture2D bomba;
-Texture2D explosion_right;
-Texture2D bombaExtra;
-Texture2D velocidade;
-Texture2D raio;
-Texture2D abertura;
-Texture2D campeao;
-Texture2D borda_sup_inf;
-Texture2D bordaLateral;
-Texture2D fundo;
-int vencedor;
-int vencedor1;
+extern Texture2D chaves;
+extern Texture2D kiko;
+extern Texture2D madruga;
+extern Texture2D barriga;
+extern Texture2D barril;
+extern Texture2D bola;
+extern Texture2D chapeu;
+extern Texture2D maleta;
+extern Texture2D bomba;
+extern Texture2D explosion_right;
+extern Texture2D bombaExtra;
+extern Texture2D velocidade;
+extern Texture2D raio;
+extern Texture2D abertura;
+extern Texture2D campeao;
+extern Texture2D borda_sup_inf;
+extern Texture2D bordaLateral;
+extern Texture2D fundo;
+extern int vencedor;
+extern int vencedor1;
 
-Music musicaPlay;
-Music musicaInit;
-Music musicaEnd;
-Music bomb;
+extern Music musicaPlay;
+extern Music musicaInit;
+extern Music musicaEnd;
+extern Music bomb;
 
 typedef struct Bomb{
     Rectangle pos;
