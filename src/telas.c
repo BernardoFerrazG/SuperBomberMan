@@ -24,15 +24,25 @@ void salvarPlacar(Game *g) {
     fclose(file); // Fecha o arquivo
 }
 
+// Fecha o jogo de forma limpa a partir de qualquer tela (antes a janela era
+// fechada e o loop da tela continuava chamando a raylib, o que travava o jogo).
+void encerrarJogo(Game *g) {
+    salvarPlacar(g);
+    CloseAudioDevice();
+    CloseWindow();
+    exit(EXIT_SUCCESS);
+}
+
 
 void DrawTimer(Game *g) {
     if (g->partidaIniciada) {
         int timeLeft = (int)(g->gameDuration - (GetTime() - g->startTime));
+        if (timeLeft < 0) timeLeft = 0;
         int minutes = timeLeft / 60;
         int seconds = timeLeft % 60;
 
-        char timeStr[6];
-        sprintf(timeStr, "%02d:%02d", minutes, seconds);
+        char timeStr[16];
+        snprintf(timeStr, sizeof timeStr, "%02d:%02d", minutes, seconds);
         DrawText(timeStr, g->screenWidth / 2 - MeasureText("00:00", 30) / 2, 0, 30, BLACK);
     }
 }
@@ -105,8 +115,7 @@ void initialScreen(Game *g){
         }
 
         if(WindowShouldClose()){
-            salvarPlacar(g);
-            CloseWindow();
+            encerrarJogo(g);
         } 
     }
 
@@ -116,8 +125,7 @@ void initialScreen(Game *g){
     }
 
     if(select == 1){
-        salvarPlacar(g);
-        CloseWindow();
+        encerrarJogo(g);
     } 
 }
 
@@ -149,11 +157,10 @@ void nameScreen(Game *g,Hero *h, int n){
             }
         }
         if(WindowShouldClose()){
-            salvarPlacar(g);
-            CloseWindow();
+            encerrarJogo(g);
         } 
     }
-    strcpy(h->name, playerName);
+    snprintf(h->name, sizeof h->name, "%s", playerName);
     for(int i = 0; i < 100; i++){
         playerName[i] = '\0';
     }
@@ -194,8 +201,7 @@ void drawMapScreen(Game *g){
             select++;
         }
         if(WindowShouldClose()){
-            salvarPlacar(g);
-            CloseWindow();
+            encerrarJogo(g);
         } 
     }
     //mapa 1
@@ -258,8 +264,7 @@ void drawDeathScreen(Game *g, Hero *h){
             select++;
         }
         if(WindowShouldClose()){
-            salvarPlacar(g);
-            CloseWindow();
+            encerrarJogo(g);
         } 
     }
     if(select == 0){
@@ -337,8 +342,7 @@ void drawDrawScreen(Game *g){
             select++;
         }
         if(WindowShouldClose()){
-            salvarPlacar(g);
-            CloseWindow();
+            encerrarJogo(g);
         } 
     }
     if(select == 0){

@@ -49,11 +49,11 @@ void map0_setup(Game *g){
 
 
 
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < MAX_BOMBS; i++){
         g->hero.bombs[i].isActive = 0;
         g->hero.bombs[i].distance = 3;
     }
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < MAX_BOMBS; i++){
         g->hero1.bombs[i].isActive = 0;
         g->hero1.bombs[i].distance = 3;
     }
@@ -131,11 +131,11 @@ void map1_setup(Game *g){
     g->maps[1].prev_map = -1;
     g->maps[1].next_map = 1;
 
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < MAX_BOMBS; i++){
         g->hero.bombs[i].isActive = 0;
         g->hero.bombs[i].distance = 3;
     }
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < MAX_BOMBS; i++){
         g->hero1.bombs[i].isActive = 0;
         g->hero1.bombs[i].distance = 3;
     }

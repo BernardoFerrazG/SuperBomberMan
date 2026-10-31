@@ -11,6 +11,8 @@
 #define SCREEN_BORDER 27
 #define HNUMBOMB 2
 #define H1NUMBOMB 2
+#define MAX_BOMBS 10          // capacidade do vetor de bombas de cada herói
+#define BOMB_FUSE_SECONDS 3  // tempo até a bomba explodir
 
 extern Texture2D chaves;
 extern Texture2D kiko;
@@ -21,7 +23,6 @@ extern Texture2D bola;
 extern Texture2D chapeu;
 extern Texture2D maleta;
 extern Texture2D bomba;
-extern Texture2D explosion_right;
 extern Texture2D bombaExtra;
 extern Texture2D velocidade;
 extern Texture2D raio;
@@ -46,7 +47,7 @@ typedef struct Bomb{
     Rectangle explosion_down;
     int isActive;
     float distance;
-    int time;
+    double time;     // instante (GetTime) em que a bomba foi plantada
     int collision;
 }Bomb;
 
@@ -58,7 +59,7 @@ typedef struct Hero {
     int draw_bomb;
     int put_bomb;
     int num_bombs;
-    Bomb bombs[10];
+    Bomb bombs[MAX_BOMBS];
     Texture2D boneco;
     char name[100];
 } Hero;
@@ -121,6 +122,7 @@ void UpdateDrawFrame(Game *g);  // Update and Draw (one frame)
 // Auxiliar Functions Declaration
 //------------------------------------------------------------------------------------
 void salvarPlacar(Game *g);
+void encerrarJogo(Game *g);
 void DrawTimer(Game *g);
 void IniciarPartida(Game *g);
 void makeHero(Game *g);    
@@ -143,8 +145,8 @@ int barrier1_collision(Map *m, Rectangle t);
 int border_collision(Game *g, Rectangle t);
 int bomb_collision(Game *g, Rectangle target);
 int bomb1_collision(Game *g, Rectangle target);
-int bombBarrierCollison(Game *g);
-void checkBombChainReaction(Hero *h, Hero *h1, int index);
+void bombBarrierCollison(Game *g);
+void checkBombChainReaction(Hero *target, Hero *source, int index);
 void map0_setup(Game *g);
 void map1_setup(Game *g);
 int deathHero(Bomb b, Hero *target, Game *g);

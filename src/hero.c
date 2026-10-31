@@ -107,12 +107,14 @@ void update_hero_pos(Game *g){
 }
 
 int deathHero(Bomb b, Hero *target, Game *g){
+        (void)g;
         if(CheckCollisionRecs(target->pos, b.explosion_down) ||
             CheckCollisionRecs(target->pos, b.explosion_left) ||
             CheckCollisionRecs(target->pos, b.explosion_up) ||
             CheckCollisionRecs(target->pos, b.explosion_right)){
-                return 1;   
+                return 1;
         }
+        return 0;
 }
 
 

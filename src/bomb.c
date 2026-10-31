@@ -13,7 +13,7 @@ void draw_bomb(Game *g){
     bombBarrierCollison(g);
     for(int i = 0; i < g->hero.num_bombs; i++){
         if(g->hero.bombs[i].isActive == 1){
-            if(fabs(g->hero.bombs[i].time - GetTime()) > 3){
+            if(fabs(g->hero.bombs[i].time - GetTime()) > BOMB_FUSE_SECONDS){
                 DrawRectangleRec(g->hero.bombs[i].explosion_right, RED);
                 DrawRectangleRec(g->hero.bombs[i].explosion_left, RED);
                 DrawRectangleRec(g->hero.bombs[i].explosion_up, RED);
@@ -28,7 +28,7 @@ void draw_bomb(Game *g){
     //bomb_hero1
     for(int i = 0; i < g->hero1.num_bombs; i++){
         if(g->hero1.bombs[i].isActive == 1){
-            if(fabs(g->hero1.bombs[i].time - GetTime()) > 3){
+            if(fabs(g->hero1.bombs[i].time - GetTime()) > BOMB_FUSE_SECONDS){
                 DrawRectangleRec(g->hero1.bombs[i].explosion_right, RED);
                 DrawRectangleRec(g->hero1.bombs[i].explosion_left, RED);
                 DrawRectangleRec(g->hero1.bombs[i].explosion_up, RED);
@@ -98,8 +98,7 @@ void update_bomb(Game *g){
     
     for(int i = 0; i < g->hero.num_bombs; i++){
         if(g->hero.bombs[i].isActive == 1){
-            if(fabs(g->hero.bombs[i].time - GetTime()) > 3 && fabs(g->hero.bombs[i].time - GetTime()) < 5){
-                Rectangle verify_bomb;
+            if(fabs(g->hero.bombs[i].time - GetTime()) > BOMB_FUSE_SECONDS && fabs(g->hero.bombs[i].time - GetTime()) < BOMB_FUSE_SECONDS + 2){
                 Rectangle rectangle_bomb;
                 int grow_tax = g->hero.bombs[i].distance;
                 
@@ -137,15 +136,15 @@ void update_bomb(Game *g){
                         g->hero.bombs[i].explosion_down.y -= grow_tax;
                     }
                 }
-                checkBombChainReaction(h,h, i);
-                checkBombChainReaction(h,h1, i);
+                checkBombChainReaction(h, h, i);
+                checkBombChainReaction(h1, h, i);
                 if(deathHero(h->bombs[i], h, g)){
                     drawDeathScreen(g, h1);
                 }
                 if(deathHero(h->bombs[i], h1, g)){
                     drawDeathScreen(g, h);
                 }
-            }else if(fabs(g->hero.bombs[i].time - GetTime()) > 3){
+            }else if(fabs(g->hero.bombs[i].time - GetTime()) > BOMB_FUSE_SECONDS){
                 g->hero.bombs[i].isActive = 0;
             }
         }
@@ -177,8 +176,7 @@ void update_bomb(Game *g){
     }
     for(int i = 0; i < g->hero1.num_bombs; i++){
         if(g->hero1.bombs[i].isActive == 1){
-            if(fabs(g->hero1.bombs[i].time - GetTime()) > 3 && fabs(g->hero1.bombs[i].time - GetTime()) < 5){
-                Rectangle verify_bomb;
+            if(fabs(g->hero1.bombs[i].time - GetTime()) > BOMB_FUSE_SECONDS && fabs(g->hero1.bombs[i].time - GetTime()) < BOMB_FUSE_SECONDS + 2){
                 Rectangle rectangle_bomb;
                 int grow_tax = g->hero1.bombs[i].distance;
                 if(g->hero1.bombs[i].explosion_right.width < g->hero1.bombs[i].distance * STD_SIZE_X){
@@ -214,8 +212,8 @@ void update_bomb(Game *g){
                         g->hero1.bombs[i].explosion_down.y -= grow_tax;
                     }
                 }
-                checkBombChainReaction(h1,h1, i);
-                checkBombChainReaction(h1,h, i);
+                checkBombChainReaction(h1, h1, i);
+                checkBombChainReaction(h, h1, i);
                 
                 if(deathHero(h1->bombs[i], h1, g)){
                     drawDeathScreen(g, h);
@@ -225,7 +223,7 @@ void update_bomb(Game *g){
                 }
                 
             }
-            else if(fabs(g->hero1.bombs[i].time - GetTime()) > 3){
+            else if(fabs(g->hero1.bombs[i].time - GetTime()) > BOMB_FUSE_SECONDS){
                 g->hero1.bombs[i].isActive = 0;
             }
         }
@@ -244,11 +242,15 @@ void updatePowerUp(Game *g, Hero *h){
                 g->maps[g->curr_map].powerups[i].exist = 0;
             }
             if(g->maps[g->curr_map].powerups[i].type == 1){
-                h->num_bombs += 1;
+                if(h->num_bombs < MAX_BOMBS){
+                    h->num_bombs += 1;
+                }
                 g->maps[g->curr_map].powerups[i].exist = 0;
             }
             if(g->maps[g->curr_map].powerups[i].type == 2){
-                h->bombs->distance += 0.5;
+                for(int b = 0; b < MAX_BOMBS; b++){
+                    h->bombs[b].distance += 0.5;
+                }
                 g->maps[g->curr_map].powerups[i].exist = 0;
             }
             if(g->maps[g->curr_map].powerups[i].type > 2 && g->maps[g->curr_map].powerups[i].type < 5){
@@ -287,57 +289,51 @@ int bomb1_collision(Game *g, Rectangle target){
 }
 
 
-int bombBarrierCollison(Game *g){
-    for(int j = 0; j < g->hero.num_bombs; j++){
-        if(g->hero.bombs[j].isActive){
-            for(int i = 0; i < 25; i++){
-                if(g->maps[g->curr_map].barriers1[i].exist){
-                    if (CheckCollisionRecs(g->maps[g->curr_map].barriers1[i].barrier1, g->hero.bombs[j].explosion_up)){
-                        g->maps[g->curr_map].barriers1[i].exist = 0;
-                        //g->hero.bombs[j].explosion_up -= (30 * g->hero.bombs[j].distance);
-                    }
-                    if (CheckCollisionRecs(g->maps[g->curr_map].barriers1[i].barrier1, g->hero.bombs[j].explosion_down)){
-                        g->maps[g->curr_map].barriers1[i].exist = 0;
-                        //g->hero.bombs[j].explosion_down.height += (10 * g->hero.bombs[j].distance);
-                    }
-
-                }
+// Barreiras destrutíveis atingidas pela explosão (nas quatro direções) de qualquer herói somem.
+static void destroiBarreiras(Map *m, Hero *h){
+    for(int j = 0; j < h->num_bombs; j++){
+        Bomb *bomba = &h->bombs[j];
+        if(!bomba->isActive){
+            continue;
+        }
+        for(int i = 0; i < 25; i++){
+            Barrier *barreira = &m->barriers1[i];
+            if(barreira->exist &&
+               (CheckCollisionRecs(barreira->barrier1, bomba->explosion_up) ||
+                CheckCollisionRecs(barreira->barrier1, bomba->explosion_down) ||
+                CheckCollisionRecs(barreira->barrier1, bomba->explosion_left) ||
+                CheckCollisionRecs(barreira->barrier1, bomba->explosion_right))){
+                barreira->exist = 0;
             }
         }
     }
+}
 
-    for(int j = 0; j < g->hero1.num_bombs; j++){
-        if(g->hero1.bombs[j].isActive){
-            for(int i = 0; i < 25; i++){
-                if(g->maps[g->curr_map].barriers1[i].exist){
-                    if (CheckCollisionRecs(g->maps[g->curr_map].barriers1[i].barrier1, g->hero1.bombs[j].explosion_up) ||
-                        CheckCollisionRecs(g->maps[g->curr_map].barriers1[i].barrier1, g->hero1.bombs[j].explosion_down) ||
-                        CheckCollisionRecs(g->maps[g->curr_map].barriers1[i].barrier1, g->hero1.bombs[j].explosion_left) ||
-                        CheckCollisionRecs(g->maps[g->curr_map].barriers1[i].barrier1, g->hero1.bombs[j].explosion_right)){                 
-                        g->maps[g->curr_map].barriers1[i].exist = 0;
-                    }
-                }
-            }
-        }
+void bombBarrierCollison(Game *g){
+    Map *m = &g->maps[g->curr_map];
+    destroiBarreiras(m, &g->hero);
+    destroiBarreiras(m, &g->hero1);
+}
+
+
+// A explosão da bomba `i` de `source` detona antecipadamente as bombas de `target` que ela atingir.
+void checkBombChainReaction(Hero *target, Hero *source, int i) {
+    Bomb *exploding = &source->bombs[i];
+    if (!exploding->isActive) {
+        return;
     }
-} 
-
-
-void checkBombChainReaction(Hero *h, Hero *h1, int i) {
-    for (int index = 0; index < h1->num_bombs; index++) {
-        if (h1->bombs[i].isActive == 1) {
-            // Verifique se a explosão da bomba 'i' atinge a bomba 'index'
-            if(i != index && h->bombs[index].isActive){
-                if (CheckCollisionRecs(h1->bombs[i].explosion_right, h->bombs[index].pos) ||
-                    CheckCollisionRecs(h1->bombs[i].explosion_left, h->bombs[index].pos) ||
-                    CheckCollisionRecs(h1->bombs[i].explosion_up, h->bombs[index].pos) ||
-                    CheckCollisionRecs(h1->bombs[i].explosion_down, h->bombs[index].pos)) {
-                    // Ative a bomba index caso ela não esteja ativa
-                    if(fabs(h->bombs[index].time - GetTime()) < 3){
-                        h->bombs[index].time = GetTime() - 3;
-                    }
-                    // Adicione qualquer lógica h->bombs[index].timeadicional necessária aqui
-                }
+    for (int index = 0; index < target->num_bombs; index++) {
+        Bomb *other = &target->bombs[index];
+        if ((target == source && index == i) || !other->isActive) {
+            continue;
+        }
+        if (CheckCollisionRecs(exploding->explosion_right, other->pos) ||
+            CheckCollisionRecs(exploding->explosion_left, other->pos) ||
+            CheckCollisionRecs(exploding->explosion_up, other->pos) ||
+            CheckCollisionRecs(exploding->explosion_down, other->pos)) {
+            // Antecipa o pavio: a bomba atingida passa a explodir imediatamente.
+            if (fabs(other->time - GetTime()) < BOMB_FUSE_SECONDS) {
+                other->time = GetTime() - BOMB_FUSE_SECONDS;
             }
         }
     }

@@ -16,7 +16,6 @@ Texture2D bola;
 Texture2D chapeu;
 Texture2D maleta;
 Texture2D bomba;
-Texture2D explosion_right;
 Texture2D bombaExtra;
 Texture2D velocidade;
 Texture2D raio;
@@ -57,7 +56,6 @@ int main(void)
     chapeu = LoadTexture("images/chapeu.png");
     maleta = LoadTexture("images/maleta.png");
     bomba = LoadTexture("images/bomba.png");
-    explosion_right = LoadTexture("images/explosion_right.png");
     bombaExtra = LoadTexture("images/bombaExtra.png");
     velocidade = LoadTexture("images/velocidade.png");
     raio = LoadTexture("images/raio.png");
@@ -66,8 +64,6 @@ int main(void)
     borda_sup_inf = LoadTexture("images/borda_sup_inf.png");
     bordaLateral = LoadTexture("images/bordaaLateral.png");
     fundo = LoadTexture("images/fundo.png");
-    SetTargetFPS(120);
-    
     SetTargetFPS(120);
 
     InitAudioDevice();
@@ -127,6 +123,9 @@ int main(void)
     UnloadMusicStream(musicaEnd);
     UnloadMusicStream(bomb);
     UnloadMusicStream(musicaPlay);
+
+    CloseAudioDevice();
+    CloseWindow();
     return 0;
 }
 
